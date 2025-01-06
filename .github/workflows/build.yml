@@ -3,7 +3,7 @@ name: Generate release-artifacts
 
 # on events
 on:
-  release:
+  workflow_dispatch:
     types: 
         - created
 
