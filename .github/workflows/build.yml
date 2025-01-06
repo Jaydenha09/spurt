@@ -2,10 +2,7 @@
 name: Generate release-artifacts
 
 # on events
-on:
-  workflow_dispatch:
-    types: 
-        - created
+on: workflow_dispatch
 
 # workflow tasks
 jobs:
