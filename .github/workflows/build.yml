@@ -1,23 +1,36 @@
-# workflow name
-name: Generate release-artifacts
+name: QEMU
 
-# on events
-on: workflow_dispatch
+on: [push, workflow_dispatch]
 
-# workflow tasks
 jobs:
-  generate:
-    name: Generate cross-platform builds
+  unit:
+    name: QEMU
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        arch:
+          - linux/amd64
+          - linux/arm64
+          # - linux/riscv64  # Not supported by go official image.
+          - linux/ppc64le
+          - linux/s390x
+          # - linux/386      # Runtime error occurs.
+          # - linux/mips64le # Runtime error occurs.
+          # - linux/mips64   # Not supported by go official image.
+          - linux/arm/v7
+          # - linux/arm/v6   # Not supported by go official image.
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v2
-      - name: Generate build files
-        uses: thatisuday/go-cross-build@v1
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
         with:
-            platforms: 'linux/amd64, darwin/amd64, windows/amd64'
-            package: 'spurt'
-            name: 'spurt'
-            compress: 'true'
-            dest: 'dist'
-
+          platforms: ${{ matrix.arch }}
+      - name: Docker run
+        run: |
+          docker run \
+            --rm \
+            -v $(pwd):/${{ github.workspace }} \
+            --platform ${{ matrix.arch }} \
+            golang:1.22.2 \
+            bash -c "go run /${{ github.workspace }}/main.go"
