@@ -2,7 +2,7 @@ name: build
 
 on:
   release:
-    types: [created] # trigger when a release is created
+    types: [published]
 
 jobs:
   build-go-binary:
