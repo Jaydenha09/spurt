@@ -3,7 +3,6 @@ name: build
 on:
   release:
     types: [created] # trigger when a release is created
-  workflow_dispatch: # allow manual triggering of the workflow
 
 jobs:
   build-go-binary:
@@ -23,5 +22,5 @@ jobs:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           goversion: 1.18 # the required Go version
-          binary_name: "hello" # the name of the binary executable
+          binary_name: "spurt" # the name of the binary executable
           extra_files: LICENSE README.md # the extra files to add to the release
